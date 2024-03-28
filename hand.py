@@ -1,11 +1,12 @@
 from fingers import Fingers
 import numpy as np
 import cv2
+import math
 
 class Hand:
-    def __init__(self, mp_hands, fingers: Fingers):
+    def __init__(self, mp_hands, landmarks):
         self.mp_hands = mp_hands
-        self.fingers = fingers
+        self.fingers = Fingers(landmarks)
         
     def bounding_box(self, frame):
 
@@ -36,6 +37,18 @@ class Hand:
 
         cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
 
-
     def three_fingers_up(self) -> bool:
         return self.fingers.thumb_up() and self.fingers.index_up() and self.fingers.middle_up() and self.fingers.ring_down() and self.fingers.pinky_down()
+
+    def touching(self, frame, finger1, finger2, radius=25):
+        """
+        Check if two landmark points are touching with a given radius
+        """
+        # Scale the landmark points to match the frame dimensions
+        x1, y1 = finger1.x * frame.shape[1], finger1.y * frame.shape[0]
+        x2, y2 = finger2.x * frame.shape[1], finger2.y * frame.shape[0]
+
+        # Calculate the distance between the two points
+        dist = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+        # If the distance is less than or equal to the sum of their radii, they are touching
+        return dist <= (2 * radius)

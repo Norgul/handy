@@ -1,3 +1,5 @@
+import cv2
+
 class Fingers:
     def __init__(self, hand_landmarks):
         self.hand_landmarks = hand_landmarks
@@ -50,3 +52,11 @@ class Fingers:
     def pinky_down(self) -> bool:
         return self.pinky_tip.y > self.pinky_knuckle.y
     # endregion fingers
+
+    def circle_tip(self, frame, landmark, color):
+        """
+        Draw a circle around a particular landmark point
+        """
+        center = (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0]))
+        cv2.circle(frame, center, 25, color, cv2.FILLED)
+        

@@ -1,7 +1,4 @@
 import cv2
-import mediapipe as mp
-import pyautogui
-import time
 from mp_hands import MpHands
 
 mp_hands = MpHands()

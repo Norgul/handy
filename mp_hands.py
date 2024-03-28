@@ -1,8 +1,8 @@
 import mediapipe as mp
-from fingers import Fingers
 from hand import Hand
 from cv_helpers import *
 import cv2
+import pyautogui
 
 class MpHands:
     def __init__(self):
@@ -50,19 +50,27 @@ class MpHands:
                    
         if not landmarks:
             return None
-                                    
-        for ind in [0, 5, 6, 7, 8]:
+                         
+        # Draw left/right hand indicator circles
+        # Additional points...5, 6, 7, 8
+        for ind in [0]:
             landmark = landmarks.landmark[ind]
             center = (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0]))
             cv2.circle(frame, center, 15, color, 5)
 
-        fingers = Fingers(landmarks)
-        hand = Hand(self.hands, fingers)
+        hand = Hand(self.hands, landmarks)
         hand.bounding_box(frame)
+        
+        fingers = hand.fingers
+        # Draw finger points
+        fingers.circle_tip(frame, fingers.thumb_tip, (204, 204, 0))
+        fingers.circle_tip(frame, fingers.index_tip, (147, 20, 255))
+        fingers.circle_tip(frame, fingers.middle_tip, (0, 255, 255))
+        fingers.circle_tip(frame, fingers.ring_tip, (0, 255, 0))
+        fingers.circle_tip(frame, fingers.pinky_tip, (255, 0, 0))
         
         return hand
         
-
     def process(self, frame):
         results = self.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         
@@ -78,11 +86,39 @@ class MpHands:
         left_hand = self.init_hand(frame, left_landmarks, (0,0,255))
         right_hand = self.init_hand(frame, right_landmarks, (255,0,0))
         
-        if left_hand and left_hand.three_fingers_up():
-            print_on_frame(frame, "3 left FINGERS UP")
+        
+        if left_hand:
+            left_fingers = left_hand.fingers
+            
+            if left_hand.three_fingers_up():
+                print_on_frame(frame, "3 left FINGERS UP")
+                pyautogui.hotkey('...')
 
-        if right_hand and right_hand.three_fingers_up():
-            print_on_frame(frame, "3 right FINGERS UP", True)
+            if left_hand.touching(frame, left_fingers.index_tip, left_fingers.thumb_tip):
+                print_on_frame(frame, "Index and thumb touching")
+                pyautogui.hotkey('...')
+                
+                
+            if left_hand.touching(frame, left_fingers.middle_tip, left_fingers.thumb_tip):
+                print_on_frame(frame, "Middle and thumb touching")
+                pyautogui.hotkey('...')
+                
+                
 
+        if right_hand:
+            right_fingers = right_hand.fingers
+
+            if right_hand.three_fingers_up():
+                print_on_frame(frame, "3 right FINGERS UP", True)
+                
+                
+            if right_hand.touching(frame, right_fingers.index_tip, right_fingers.thumb_tip):
+                print_on_frame(frame, "Index and thumb touching", True)
+                
+                
+            if right_hand.touching(frame, right_fingers.middle_tip, right_fingers.thumb_tip):
+                print_on_frame(frame, "Middle and thumb touching", True)
+                
+                
         
 
