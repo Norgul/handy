@@ -58,5 +58,5 @@ class Fingers:
         Draw a circle around a particular landmark point
         """
         center = (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0]))
-        cv2.circle(frame, center, 25, color, cv2.FILLED)
+        cv2.circle(frame, center, 20, color, cv2.FILLED)
         

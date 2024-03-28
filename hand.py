@@ -4,7 +4,11 @@ import cv2
 import math
 
 class Hand:
-    def __init__(self, mp_hands, landmarks):
+    def __init__(self, mp_hands, landmarks, is_left = True):
+        
+        self.is_left = is_left
+        self.is_right = not is_left
+        
         self.mp_hands = mp_hands
         self.fingers = Fingers(landmarks)
         
@@ -40,7 +44,7 @@ class Hand:
     def three_fingers_up(self) -> bool:
         return self.fingers.thumb_up() and self.fingers.index_up() and self.fingers.middle_up() and self.fingers.ring_down() and self.fingers.pinky_down()
 
-    def touching(self, frame, finger1, finger2, radius=25):
+    def touching(self, frame, finger1, finger2, radius=30):
         """
         Check if two landmark points are touching with a given radius
         """

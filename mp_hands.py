@@ -2,7 +2,8 @@ import mediapipe as mp
 from hand import Hand
 from cv_helpers import *
 import cv2
-import pyautogui
+from input_controller import InputController
+from gestures.main import LeftGestures, RightGestures
 
 class MpHands:
     def __init__(self):
@@ -14,6 +15,10 @@ class MpHands:
         num_hands = 2
         
         self.hands = self.mp_hands.Hands(static_image_mode, num_hands)
+        
+        
+        self.shift = False
+        
 
     def draw(self, frame, hand_landmarks):
         """
@@ -46,7 +51,7 @@ class MpHands:
 
         return left_landmarks, right_landmarks
 
-    def init_hand(self, frame, landmarks, color):
+    def init_hand(self, frame, landmarks, color, is_left):
                    
         if not landmarks:
             return None
@@ -58,7 +63,7 @@ class MpHands:
             center = (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0]))
             cv2.circle(frame, center, 15, color, 5)
 
-        hand = Hand(self.hands, landmarks)
+        hand = Hand(self.hands, landmarks, is_left)
         hand.bounding_box(frame)
         
         fingers = hand.fingers
@@ -71,7 +76,7 @@ class MpHands:
         
         return hand
         
-    def process(self, frame):
+    def process(self, frame, input_controller: InputController):
         results = self.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         
         if results.multi_hand_landmarks is None:
@@ -79,46 +84,11 @@ class MpHands:
         
         left_landmarks, right_landmarks = self.extract_left_right_landmarks(frame, results)
         
-        # if left_landmarks:
         self.draw(frame, left_landmarks)
         self.draw(frame, right_landmarks)
         
-        left_hand = self.init_hand(frame, left_landmarks, (0,0,255))
-        right_hand = self.init_hand(frame, right_landmarks, (255,0,0))
+        left_hand = self.init_hand(frame, left_landmarks, (0,0,255), True)
+        right_hand = self.init_hand(frame, right_landmarks, (255,0,0), False)
         
-        
-        if left_hand:
-            left_fingers = left_hand.fingers
-            
-            if left_hand.three_fingers_up():
-                print_on_frame(frame, "3 left FINGERS UP")
-                pyautogui.hotkey('...')
-
-            if left_hand.touching(frame, left_fingers.index_tip, left_fingers.thumb_tip):
-                print_on_frame(frame, "Index and thumb touching")
-                pyautogui.hotkey('...')
-                
-                
-            if left_hand.touching(frame, left_fingers.middle_tip, left_fingers.thumb_tip):
-                print_on_frame(frame, "Middle and thumb touching")
-                pyautogui.hotkey('...')
-                
-                
-
-        if right_hand:
-            right_fingers = right_hand.fingers
-
-            if right_hand.three_fingers_up():
-                print_on_frame(frame, "3 right FINGERS UP", True)
-                
-                
-            if right_hand.touching(frame, right_fingers.index_tip, right_fingers.thumb_tip):
-                print_on_frame(frame, "Index and thumb touching", True)
-                
-                
-            if right_hand.touching(frame, right_fingers.middle_tip, right_fingers.thumb_tip):
-                print_on_frame(frame, "Middle and thumb touching", True)
-                
-                
-        
-
+        LeftGestures(frame, left_hand, input_controller)
+        RightGestures(frame, right_hand, input_controller)
