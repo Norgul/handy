@@ -1,6 +1,5 @@
 import mediapipe as mp
 from hand import Hand
-from cv_helpers import *
 import cv2
 from input_controller import InputController
 from gestures.main import LeftGestures, RightGestures
