@@ -6,14 +6,13 @@ import math
 class Hand:
     def __init__(self, mp_hands, landmarks, is_left = True):
         
-        self.is_left = is_left
-        self.is_right = not is_left
-        
         self.mp_hands = mp_hands
         self.fingers = Fingers(landmarks)
         
+        self.is_left = is_left
+        self.is_right = not is_left
+        
     def bounding_box(self, frame):
-
         # Get the x and y coordinates of the hand landmarks
         x = []
         y = []

@@ -2,6 +2,10 @@ import cv2
 
 class Fingers:
     def __init__(self, hand_landmarks):
+        if not hand_landmarks:
+            print("WARNING: No hand landmarks present")
+            return
+        
         self.hand_landmarks = hand_landmarks
 
         self.thumb_tip = hand_landmarks.landmark[4]
@@ -9,6 +13,7 @@ class Fingers:
 
         self.index_tip = hand_landmarks.landmark[8]
         self.index_knuckle = hand_landmarks.landmark[6]
+        self.index_bottom = hand_landmarks.landmark[5]
 
         self.middle_tip = hand_landmarks.landmark[12]
         self.middle_knuckle = hand_landmarks.landmark[10]
@@ -58,5 +63,5 @@ class Fingers:
         Draw a circle around a particular landmark point
         """
         center = (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0]))
-        cv2.circle(frame, center, 20, color, cv2.FILLED)
+        cv2.circle(frame, center, 25, color, cv2.FILLED)
         
