@@ -51,7 +51,7 @@ while True:
     
     # Left
     Gestures.is_up(left_hand)
-    Gestures.click(gestures.left_thumb_index_touch, input_controller.button.left)
+    Gestures.click_hold(gestures.left_thumb_index_touch, input_controller.button.left)
 
     # Right
     Gestures.press(gestures.right_thumb_index_touch, input_controller.key.shift)

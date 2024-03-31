@@ -2,6 +2,7 @@ from hand import Hand
 import cv2
 import pyautogui
 from input_controller import InputController
+import pygame
 
 class CursorController:
         
@@ -19,6 +20,9 @@ class CursorController:
         self.top_left_y = None
         self.bottom_right_x = None
         self.bottom_right_y = None
+        
+        pygame.init()
+        
         
 
     def draw_when_true(self, frame, case: bool, hand: Hand):
@@ -39,13 +43,16 @@ class CursorController:
             self.calculate_rectangle_coordinates(frame, scaled_width, scaled_height, hand_center_x, hand_center_y)
 
             self.calculated = True
+            
+            pygame.mixer.music.load("cursor_on.mp3")
+            pygame.mixer.music.play()
 
         # We calculated the coordinates, we can continue drawing this on the screen as long as you don't reset it
         if self.calculated:
             # Draw the rectangle on the frame
             cv2.rectangle(frame, (self.top_left_x, self.top_left_y), (self.bottom_right_x, self.bottom_right_y), (255, 255, 255), 3)
             self.drawn = True
-
+            
     def scaled_monitor_dimensions(self, frame, percentage):
         """
         Return monitor dimensions scaled to fit in x% of the frame
