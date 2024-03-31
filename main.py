@@ -1,11 +1,13 @@
 import cv2
 from mp_hands import MpHands
 from input_controller import InputController
+from cursor_controller import CursorController
 from gestures.main import Gestures
 
 mp_hands = MpHands()
 cap = cv2.VideoCapture(0)
 input_controller = InputController()
+cursor_controller = CursorController()
 
 def find_and_draw_midpoints(frame):
     # Get frame dimensions
@@ -46,11 +48,21 @@ while True:
     
     gestures = Gestures(frame, left_hand, right_hand, input_controller).load()
     
+    
     # Left
-    InputController.click(gestures.left_thumb_index_touch, input_controller.button.left)
+    Gestures.is_up(left_hand)
+    Gestures.click(gestures.left_thumb_index_touch, input_controller.button.left)
 
     # Right
-    InputController.press(gestures.right_thumb_index_touch, input_controller.key.shift)
+    Gestures.press(gestures.right_thumb_index_touch, input_controller.key.shift)
+    
+
+    cursor_controller.draw_when_true(frame, Gestures.activate, left_hand)
+    
+    if left_hand and cursor_controller.drawn:
+        cursor_controller.move_mouse_within_rectangle(frame, input_controller, left_hand.fingers.index_bottom.x, left_hand.fingers.index_bottom.y)
+
+    
     
     
     cv2.imshow('MediaPipe Hands', frame)

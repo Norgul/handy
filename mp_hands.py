@@ -57,12 +57,16 @@ class MpHands:
         if not landmarks:
             return None
 
-        self.draw_hand_indicator_circle(frame, landmarks, color)
-
         hand = Hand(self.hands, landmarks, is_left)
-        hand.bounding_box(frame)
+        top_left_x, _, bottom_right_x, _ = hand.bounding_box(frame)
         
+        # Prevent registering small random objects as hands
+        if bottom_right_x - top_left_x < 100:
+            return
+        
+        self.draw_hand_indicator_circle(frame, landmarks, color)
         self.draw_finger_points(frame, hand.fingers)
+        self.draw_landmarks(frame, landmarks)
         
         return hand
 
@@ -74,9 +78,6 @@ class MpHands:
             return None, None
         
         left_landmarks, right_landmarks = self.split_landmarks_by_hand(results)
-        
-        self.draw_landmarks(frame, left_landmarks)
-        self.draw_landmarks(frame, right_landmarks)
         
         left_hand = self.init_hand(frame, left_landmarks, (0,0,255), True)
         right_hand = self.init_hand(frame, right_landmarks, (255,0,0), False)
