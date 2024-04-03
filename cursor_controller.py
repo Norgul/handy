@@ -1,12 +1,12 @@
 from Hand import Hand
 import cv2
 import pyautogui
-from input_controller import InputController
 import pygame
+from typing import Tuple
 
 class CursorController:
         
-    def __init__(self, scale_percentage = 30) -> None:
+    def __init__(self, scale_percentage: int = 30) -> None:
         self.scale_percentage = scale_percentage
         # Is rectangle drawn
         self.drawn = False
@@ -23,9 +23,8 @@ class CursorController:
         
         pygame.init()
         
-        
 
-    def draw_when_true(self, frame, case: bool, hand: Hand):
+    def draw_when_true(self, frame, case: bool, hand: Hand) -> None:
         """
         Given some case, draw a rectangle on the screen around finger landmark
         """
@@ -53,7 +52,7 @@ class CursorController:
             cv2.rectangle(frame, (self.top_left_x, self.top_left_y), (self.bottom_right_x, self.bottom_right_y), (255, 255, 255), 3)
             self.drawn = True
             
-    def scaled_monitor_dimensions(self, frame, percentage):
+    def scaled_monitor_dimensions(self, frame, percentage: int) -> Tuple[int, int, float]:
         """
         Return monitor dimensions scaled to fit in x% of the frame
         """
@@ -65,7 +64,7 @@ class CursorController:
         
         return scaled_width, scaled_height, scale_factor
         
-    def calculate_rectangle_coordinates(self, frame, scaled_width, scaled_height, center_x, center_y):
+    def calculate_rectangle_coordinates(self, frame, scaled_width, scaled_height, center_x, center_y) -> None:
         """
         Calculate rectangle coordinates to position it around center coordinates,
         but keep it within frame bounds if it was to be drawn outside a frame.
@@ -95,7 +94,7 @@ class CursorController:
         self.bottom_right_x = self.top_left_x + scaled_width
         self.bottom_right_y = self.top_left_y + scaled_height
 
-    def move_mouse_within_rectangle(self, frame, input_controller: InputController, x, y):
+    def move_mouse_within_rectangle(self, frame, x, y) -> Tuple[float, float]:
         """
         Move the mouse within a specified rectangle based on finger coordinates.
         """
@@ -125,5 +124,3 @@ class CursorController:
         mouse_y = normalized_y * self.monitor_width
         
         return (mouse_x, mouse_y)
-
-        input_controller.mouse.position = (mouse_x, mouse_y)

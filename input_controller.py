@@ -5,7 +5,7 @@ from pynput.mouse import Button
 from pynput.keyboard import Key
 
 class InputController:
-    def __init__(self):
+    def __init__(self) -> None:
         self.mouse = MouseController()
         self.button = Button
         

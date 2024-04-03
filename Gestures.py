@@ -1,3 +1,4 @@
+from typing import Tuple
 from Events.LeftHandEvents import HandSpawnedCursor, LeftThumbTouchedIndex, LeftThumbTouchedMiddle, LeftThumbTouchedPinky, LeftThumbTouchedRing
 from Events.RightHandEvents import RightHandGrab, RightHandPointingOne, RightHandPointingThree, RightHandPointingTwo, RightThumbTouchedIndex, RightThumbTouchedMiddle, RightThumbTouchedPinky, RightThumbTouchedRing
 from Hand import Hand
@@ -28,16 +29,13 @@ class Gestures():
         self.input_controller = input_controller
         self.cursor_controller = cursor_controller
 
-
-
-
     def load(self):
         self.load_left_hand()
         self.load_right_hand()
             
         return self
 
-    def load_left_hand(self):
+    def load_left_hand(self) -> None:
         if not self.left_hand:
             return
 
@@ -53,7 +51,7 @@ class Gestures():
         self.cursor_controller.draw_when_true(self.frame, Gestures.activate, self.left_hand)
         
         if self.left_hand and self.cursor_controller.drawn:
-            (mouse_x, mouse_y) = self.cursor_controller.move_mouse_within_rectangle(self.frame, self.input_controller, fingers.index_bottom.x, fingers.index_bottom.y)
+            (mouse_x, mouse_y) = self.cursor_controller.move_mouse_within_rectangle(self.frame, fingers.index_bottom.x, fingers.index_bottom.y)
     
             HandSpawnedCursor.dispatch(Gestures.activate, x=mouse_x, y=mouse_y)
         #endregion cursor
@@ -65,7 +63,7 @@ class Gestures():
         LeftThumbTouchedRing.dispatch(self.left_hand.touching(fingers.thumb_tip, fingers.ring_tip))
         LeftThumbTouchedPinky.dispatch(self.left_hand.touching(fingers.thumb_tip, fingers.pinky_tip))
 
-    def left_hand_up_counter(self):
+    def left_hand_up_counter(self) -> None:
         if self.left_hand.up():
             if not Gestures.left_hand_up:
                 Gestures.left_hand_up = True
@@ -74,7 +72,7 @@ class Gestures():
             if Gestures.left_hand_up:
                 Gestures.left_hand_up = False
 
-    def load_right_hand(self):
+    def load_right_hand(self) -> None:
         if not self.right_hand:
             return
     
@@ -93,7 +91,7 @@ class Gestures():
         RightHandGrab.dispatch(self.right_hand.grab())
 
 
-    def calculate_distance_from_point(self, fingers):
+    def calculate_distance_from_point(self, fingers) -> Tuple[float, float]:
         if not self.left_hand.touching(fingers.thumb_tip, fingers.middle_tip):
             Gestures.left_midpoint = None
             return None, None

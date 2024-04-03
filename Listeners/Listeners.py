@@ -1,9 +1,9 @@
 from Listeners.Listener import Listener
-from pynput.mouse import Controller as MouseController, Button
-from pynput.keyboard import Controller as KeyboardController, Key
+from pynput.mouse import Controller as MouseController
+from pynput.keyboard import Controller as KeyboardController
 
 class MousePress(Listener):
-    def handle(self):
+    def handle(self) -> None:
         button = self.args[0]
         
         mouse = MouseController()
@@ -12,7 +12,7 @@ class MousePress(Listener):
         print("Mouse press", button)
 
 class MouseRelease(Listener):
-    def handle(self):
+    def handle(self) -> None:
         button = self.args[0]
         
         mouse = MouseController()
@@ -21,7 +21,7 @@ class MouseRelease(Listener):
         print("Mouse release", button)
         
 class MouseTap(Listener):
-    def handle(self):
+    def handle(self) -> None:
 
         button = self.args[0]
         
@@ -31,7 +31,7 @@ class MouseTap(Listener):
         mouse.release(button)
 
 class MousePosition(Listener):
-    def handle(self, **kwargs):
+    def handle(self, **kwargs) -> None:
         
         x = kwargs.get('x')
         y = kwargs.get('y')
@@ -40,7 +40,7 @@ class MousePosition(Listener):
         mouse.position = (x, y)
 
 class MouseMove(Listener):
-    def handle(self, **kwargs):
+    def handle(self, **kwargs) -> None:
         
         x = kwargs.get('x')
         y = kwargs.get('y')
@@ -49,7 +49,7 @@ class MouseMove(Listener):
         mouse.move(x, y)
 
 class MouseScroll(Listener):
-    def handle(self, **kwargs):
+    def handle(self, **kwargs) -> None:
         
         x = kwargs.get('distance')
         y = 0 #args[1]
@@ -60,7 +60,7 @@ class MouseScroll(Listener):
         print("Mouse scroll", x, y)
         
 class KeyPress(Listener):
-    def handle(self):
+    def handle(self) -> None:
         key = self.args[0]
         
         keyboard = KeyboardController()
@@ -69,7 +69,7 @@ class KeyPress(Listener):
         print("Key press", key)
         
 class KeyRelease(Listener):
-    def handle(self):
+    def handle(self) -> None:
         key = self.args[0]
         
         keyboard = KeyboardController()
@@ -78,7 +78,7 @@ class KeyRelease(Listener):
         print("Key release", key)
 
 class KeyTap(Listener):
-    def handle(self):
+    def handle(self) -> None:
         key = self.args[0]
         
         keyboard = KeyboardController()

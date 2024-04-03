@@ -1,5 +1,7 @@
 from Events.Event import Event
 
+# region finger-to-finger touch
+
 class LeftThumbTouchedIndex(Event):
     pass
 
@@ -24,10 +26,7 @@ class LeftThumbTouchedRing(Event):
 class LeftThumbReleasedRing(Event):
     pass
 
-# region complex gestures
+# endregion finger-to-finger touch
 
 class HandSpawnedCursor(Event):
     pass
-
-
-# endregion complex gestures
