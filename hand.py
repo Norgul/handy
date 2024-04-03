@@ -1,10 +1,10 @@
+from typing import Tuple
 from Fingers import Fingers
 import numpy as np
-import cv2
 import math
 
 class Hand:
-    def __init__(self, frame, mp_hands, landmarks, is_left = True):
+    def __init__(self, frame, mp_hands, landmarks, is_left = True) -> None:
         self.frame = frame
         
         self.mp_hands = mp_hands
@@ -13,7 +13,7 @@ class Hand:
         self.is_left = is_left
         self.is_right = not is_left
         
-    def bounding_box(self):
+    def bounding_box(self) -> Tuple[int, int, int, int]:
         # Get the x and y coordinates of the hand landmarks
         x = []
         y = []
@@ -43,7 +43,7 @@ class Hand:
         
         return top_left_x, top_left_y, bottom_right_x, bottom_right_y
 
-    def center(self):
+    def center(self) -> Tuple[float, float]:
         
         top_left_x, top_left_y, bottom_right_x, bottom_right_y = self.bounding_box()
         
@@ -52,7 +52,7 @@ class Hand:
         
         return center_x, center_y
 
-    def size(self):
+    def size(self) -> float:
         
         top_left_x, top_left_y, bottom_right_x, bottom_right_y = self.bounding_box()
         
@@ -98,7 +98,7 @@ class Hand:
             and self.fingers.pinky_down()
     
 
-    def touching(self, finger1, finger2, radius=30):
+    def touching(self, finger1, finger2, radius=30) -> bool:
         """
         Check if two landmark points are touching with a given radius
         """
@@ -111,5 +111,4 @@ class Hand:
         
         # If the distance is less than or equal to the sum of their radii, they are touching
         # Also, need to ensure other fingers are up so it doesn't confuse fist with it
-        return dist <= (2 * radius) \
-            and not self.grab()
+        return dist <= (2 * radius) and not self.grab()

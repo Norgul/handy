@@ -58,7 +58,7 @@ class Fingers:
         return self.pinky_tip.y > self.pinky_knuckle.y
     # endregion fingers
 
-    def circle_tip(self, frame, landmark, color):
+    def circle_tip(self, frame, landmark, color) -> None:
         """
         Draw a circle around a particular landmark point
         """
