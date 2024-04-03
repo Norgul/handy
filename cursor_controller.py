@@ -1,4 +1,4 @@
-from hand import Hand
+from Hand import Hand
 import cv2
 import pyautogui
 from input_controller import InputController
@@ -39,12 +39,12 @@ class CursorController:
         if not self.drawn and hand:
             
             scaled_width, scaled_height, self.scale_factor = self.scaled_monitor_dimensions(frame, self.scale_percentage)
-            hand_center_x, hand_center_y = hand.center(frame)
+            hand_center_x, hand_center_y = hand.center()
             self.calculate_rectangle_coordinates(frame, scaled_width, scaled_height, hand_center_x, hand_center_y)
 
             self.calculated = True
             
-            pygame.mixer.music.load("cursor_on.mp3")
+            pygame.mixer.music.load("Effects/cursor_on.mp3")
             pygame.mixer.music.play()
 
         # We calculated the coordinates, we can continue drawing this on the screen as long as you don't reset it
@@ -124,4 +124,6 @@ class CursorController:
         mouse_x = normalized_x * self.monitor_width
         mouse_y = normalized_y * self.monitor_width
         
+        return (mouse_x, mouse_y)
+
         input_controller.mouse.position = (mouse_x, mouse_y)

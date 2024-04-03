@@ -1,5 +1,5 @@
 import mediapipe as mp
-from hand import Hand
+from Hand import Hand
 import cv2
 
 class MpHands:
@@ -57,8 +57,8 @@ class MpHands:
         if not landmarks:
             return None
 
-        hand = Hand(self.hands, landmarks, is_left)
-        top_left_x, _, bottom_right_x, _ = hand.bounding_box(frame)
+        hand = Hand(frame, self.hands, landmarks, is_left)
+        top_left_x, _, bottom_right_x, _ = hand.bounding_box()
         
         # Prevent registering small random objects as hands
         if bottom_right_x - top_left_x < 100:
