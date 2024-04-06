@@ -6,7 +6,7 @@ from typing import Tuple
 
 class CursorController:
         
-    def __init__(self, scale_percentage: int = 30) -> None:
+    def __init__(self, scale_percentage: int = 50) -> None:
         self.scale_percentage = scale_percentage
         # Is rectangle drawn
         self.drawn = False
@@ -56,7 +56,7 @@ class CursorController:
         """
         Return monitor dimensions scaled to fit in x% of the frame
         """
-        frame_height, frame_width, _ = frame.shape
+        _, frame_width, _ = frame.shape
             
         scaled_width = int(frame_width * (percentage / 100))
         scale_factor = scaled_width / self.monitor_width
