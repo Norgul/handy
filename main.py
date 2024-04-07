@@ -1,8 +1,8 @@
 import cv2
 from EventManager import EventManager
-from Events.LeftHandEvents import CursorActivated, HandSpawnedCursor, LeftThumbReleasedIndex, LeftThumbReleasedMiddle, LeftThumbReleasedPinky, LeftThumbReleasedRing, LeftThumbTouchedIndex, LeftThumbTouchedMiddle, LeftThumbTouchedPinky, LeftThumbTouchedRing
-from Events.RightHandEvents import RightHandGrab, RightHandPointingOne, RightHandPointingThree, RightHandPointingTwo, RightThumbReleasedIndex, RightThumbReleasedMiddle, RightThumbReleasedPinky, RightThumbReleasedRing, RightThumbTouchedIndex, RightThumbTouchedMiddle, RightThumbTouchedPinky, RightThumbTouchedRing
-from Listeners.Listeners import ControlCursor, DrawCursorGrid, KeyPress, KeyRelease, KeyTap, MouseMove, MousePosition, MousePress, MouseRelease, MouseScroll, MouseTap, PointDistance, ResetPoint
+from Events.LeftHandEvents import *
+from Events.RightHandEvents import *
+from Listeners.Listeners import *
 from pynput.mouse import Button
 from pynput.keyboard import Key
 from mp_hands import MpHands
@@ -51,8 +51,7 @@ EventManager(map={
         RightThumbTouchedMiddle: RightThumbReleasedMiddle,
         RightThumbTouchedPinky: RightThumbReleasedPinky,
         RightThumbTouchedRing: RightThumbReleasedRing,
-}
-).register()
+})
 
 mp_hands = MpHands()
 cap = cv2.VideoCapture(0)

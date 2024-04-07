@@ -1,9 +1,14 @@
 from typing import Tuple
+from Events.LeftHandEvents import CursorActivated
 from Fingers import Fingers
 import numpy as np
 import math
 
 class Hand:
+    was_recently_up = False
+    up_counter = 0
+    cursor_activated = False
+
     def __init__(self, frame, mp_hands, landmarks, is_left = True) -> None:
         self.frame = frame
         
@@ -12,12 +17,16 @@ class Hand:
         
         self.is_left = is_left
         self.is_right = not is_left
+
+        self.up_count()
+        self.should_activate_grid()
         
+
     def bounding_box(self) -> Tuple[int, int, int, int]:
         # Get the x and y coordinates of the hand landmarks
         x = []
         y = []
-        for id, landmark in enumerate(self.fingers.hand_landmarks.landmark):
+        for _, landmark in enumerate(self.fingers.hand_landmarks.landmark):
             x.append(landmark.x)
             y.append(landmark.y)
 
@@ -39,9 +48,8 @@ class Hand:
                                   frame_height, bottom_right_x * frame_width, bottom_right_y * frame_height]
         top_left_x, top_left_y, bottom_right_x, bottom_right_y = map(int, [top_left_x, top_left_y, bottom_right_x, bottom_right_y])
 
-        # cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
-        
         return top_left_x, top_left_y, bottom_right_x, bottom_right_y
+
 
     def center(self) -> Tuple[float, float]:
         
@@ -51,6 +59,7 @@ class Hand:
         center_y = (top_left_y + bottom_right_y) / 2
         
         return center_x, center_y
+
 
     def size(self) -> float:
         
@@ -62,12 +71,14 @@ class Hand:
         
         return size
 
+
     def up(self) -> bool:
         return self.fingers.thumb_up() \
             and self.fingers.index_up() \
             and self.fingers.middle_up() \
             and self.fingers.ring_up() \
             and self.fingers.pinky_up()
+
 
     def grab(self) -> bool:
         return self.fingers.thumb_up() \
@@ -76,6 +87,7 @@ class Hand:
             and self.fingers.ring_down() \
             and self.fingers.pinky_down()
             
+
     def one(self) -> bool:
         return self.fingers.thumb_up() \
             and self.fingers.index_up() \
@@ -83,6 +95,7 @@ class Hand:
             and self.fingers.ring_down() \
             and self.fingers.pinky_down()
     
+
     def two(self) -> bool:
         return self.fingers.thumb_up() \
             and self.fingers.index_up() \
@@ -90,6 +103,7 @@ class Hand:
             and self.fingers.ring_down() \
             and self.fingers.pinky_down()
     
+
     def three(self) -> bool:
         return self.fingers.thumb_up() \
             and self.fingers.index_up() \
@@ -110,5 +124,52 @@ class Hand:
         dist = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
         
         # If the distance is less than or equal to the sum of their radii, they are touching
-        # Also, need to ensure other fingers are up so it doesn't confuse fist with it
-        return dist <= (2 * radius) and not self.grab()
+        return (
+            dist <= (2 * radius) 
+            and not self.grab()
+            and self.uprightish()
+            and self.facing_forward()
+        )
+    
+
+    def uprightish(self) -> bool:
+        """
+        Check if at least 4 fingers are up at any given moment
+        """
+        count = sum([
+            self.fingers.thumb_up(),
+            self.fingers.index_up(),
+            self.fingers.middle_up(),
+            self.fingers.ring_up(),
+            self.fingers.pinky_up()
+        ])
+
+        return count >= 4
+
+
+    def facing_forward(self) -> bool:
+        """
+        Check if hand is directed towards the camera by comparing 
+        pinky and index finger tip position on x axis
+        """
+        if self.is_left:
+            return self.fingers.pinky_tip.x < self.fingers.index_tip.x
+        
+        return self.fingers.pinky_tip.x > self.fingers.index_tip.x
+    
+
+    def up_count(self) -> None:
+        if self.up():
+            if not Hand.was_recently_up:
+                Hand.was_recently_up = True
+                Hand.up_counter += 1
+        elif self.grab():
+            if Hand.was_recently_up:
+                Hand.was_recently_up = False
+
+
+    def should_activate_grid(self) -> None:
+        if Hand.up_counter % 2 == 0:
+            Hand.cursor_activated = not Hand.cursor_activated
+            Hand.up_counter -= 1
+            

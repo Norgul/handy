@@ -1,7 +1,6 @@
 from Listeners.Listener import Listener
 from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController
-
 from cursor_controller import CursorController
 
 class MousePress(Listener):

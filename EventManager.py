@@ -1,5 +1,5 @@
-from typing import Type
 from Events.Event import Event
+from Listeners.Listener import Listener
 
 class EventManager:
     
@@ -7,19 +7,24 @@ class EventManager:
         self.map = map
         self.inverse_map = inverse_map
 
+        self.register_events()
+        self.register_inverse_events()
 
-    def register(self) -> 'EventManager':
-        # Register map events
+
+    def register_events(self) -> None:
         for event in self.map:
-            event: Type[Event] = event
+            event: Event = event
 
             for listener in self.map[event]:
+                listener: Listener = event
+
                 event.listen(listener)
 
-        # Register inverse events
+
+    def register_inverse_events(self) -> None:
         for event in self.inverse_map:
-            event: Type[Event] = event
+            event: Event = event
+            listener: Listener = self.inverse_map[event]
 
-            event.register_inverse(self.inverse_map[event])
+            event.register_inverse(listener)
 
-        return self
