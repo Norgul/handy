@@ -1,16 +1,17 @@
 from typing import Tuple
-from Events.LeftHandEvents import CursorActivated
 from Fingers import Fingers
 import numpy as np
 import math
 
-class Hand:
-    was_recently_up = False
-    up_counter = 0
-    cursor_activated = False
+from Screen import Screen
 
-    def __init__(self, frame, mp_hands, landmarks, is_left = True) -> None:
-        self.frame = frame
+class Hand:
+    was_recently_up: bool = False
+    up_counter: int = 0
+    cursor_activated: bool = False
+
+    def __init__(self, screen: Screen, mp_hands, landmarks, is_left = True) -> None:
+        self.screen = screen
         
         self.mp_hands = mp_hands
         self.fingers = Fingers(landmarks)
@@ -23,32 +24,12 @@ class Hand:
         
 
     def bounding_box(self) -> Tuple[int, int, int, int]:
-        # Get the x and y coordinates of the hand landmarks
-        x = []
-        y = []
-        for _, landmark in enumerate(self.fingers.hand_landmarks.landmark):
-            x.append(landmark.x)
-            y.append(landmark.y)
+        """
+        Hand bounding box dimensions
+        """
+        top_left_x, top_left_y, bottom_right_x, bottom_right_y = self.fingers.landmark_coordinates()
 
-        # Calculate the bounding box of the hand
-        top_left_x = np.min(x)
-        top_left_y = np.min(y)
-        bottom_right_x = np.max(x)
-        bottom_right_y = np.max(y)
-
-        bounding_box = (top_left_x, top_left_y, bottom_right_x - top_left_x, bottom_right_y - top_left_y)
-
-        top_left_x, top_left_y, width, height = bounding_box
-        bottom_right_x = top_left_x + width
-        bottom_right_y = top_left_y + height
-
-        # Adapt 0-1 from mediapipe to actual frame dimension
-        frame_height, frame_width, _ = self.frame.shape
-        top_left_x, top_left_y, bottom_right_x, bottom_right_y = [top_left_x * frame_width, top_left_y *
-                                  frame_height, bottom_right_x * frame_width, bottom_right_y * frame_height]
-        top_left_x, top_left_y, bottom_right_x, bottom_right_y = map(int, [top_left_x, top_left_y, bottom_right_x, bottom_right_y])
-
-        return top_left_x, top_left_y, bottom_right_x, bottom_right_y
+        return self.screen.double_coordinates_to_pixels(self.screen.frame_width, self.screen.frame_height, top_left_x, top_left_y, bottom_right_x, bottom_right_y)
 
 
     def center(self) -> Tuple[float, float]:
@@ -73,7 +54,7 @@ class Hand:
 
 
     def up(self) -> bool:
-        return self.fingers.thumb_up() \
+        return self.thumb_facing_outwards() \
             and self.fingers.index_up() \
             and self.fingers.middle_up() \
             and self.fingers.ring_up() \
@@ -81,7 +62,7 @@ class Hand:
 
 
     def grab(self) -> bool:
-        return self.fingers.thumb_up() \
+        return self.thumb_facing_inwards() \
             and self.fingers.index_down() \
             and self.fingers.middle_down() \
             and self.fingers.ring_down() \
@@ -89,7 +70,7 @@ class Hand:
             
 
     def one(self) -> bool:
-        return self.fingers.thumb_up() \
+        return self.thumb_facing_inwards() \
             and self.fingers.index_up() \
             and self.fingers.middle_down() \
             and self.fingers.ring_down() \
@@ -97,7 +78,7 @@ class Hand:
     
 
     def two(self) -> bool:
-        return self.fingers.thumb_up() \
+        return self.thumb_facing_inwards() \
             and self.fingers.index_up() \
             and self.fingers.middle_up() \
             and self.fingers.ring_down() \
@@ -105,20 +86,20 @@ class Hand:
     
 
     def three(self) -> bool:
-        return self.fingers.thumb_up() \
+        return self.thumb_facing_outwards() \
             and self.fingers.index_up() \
             and self.fingers.middle_up() \
-            and self.fingers.ring_up() \
+            and self.fingers.ring_down() \
             and self.fingers.pinky_down()
     
 
-    def touching(self, finger1, finger2, radius=30) -> bool:
+    def touching(self, finger_landmark1, finger_landmark2, radius=30) -> bool:
         """
         Check if two landmark points are touching with a given radius
         """
         # Scale the landmark points to match the frame dimensions
-        x1, y1 = finger1.x * self.frame.shape[1], finger1.y * self.frame.shape[0]
-        x2, y2 = finger2.x * self.frame.shape[1], finger2.y * self.frame.shape[0]
+        x1, y1 = self.screen.coordinates_to_frame_pixels(finger_landmark1.x, finger_landmark1.y)
+        x2, y2 = self.screen.coordinates_to_frame_pixels(finger_landmark2.x, finger_landmark2.y)
 
         # Calculate the distance between the two points
         dist = math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
@@ -156,6 +137,17 @@ class Hand:
             return self.fingers.pinky_tip.x < self.fingers.index_tip.x
         
         return self.fingers.pinky_tip.x > self.fingers.index_tip.x
+
+
+    def thumb_facing_inwards(self) -> bool:
+        if self.is_left:
+            return self.fingers.thumb_pointing_left()
+        
+        return self.fingers.thumb_pointing_right()
+    
+    
+    def thumb_facing_outwards(self) -> bool:
+        return not self.thumb_facing_inwards()
     
 
     def up_count(self) -> None:

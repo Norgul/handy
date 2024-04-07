@@ -5,8 +5,9 @@ from Events.RightHandEvents import *
 from Listeners.Listeners import *
 from pynput.mouse import Button
 from pynput.keyboard import Key
+from Screen import Screen
 from mp_hands import MpHands
-from cursor_controller import CursorController
+from CursorController import CursorController
 from Gestures import Gestures
 from HandSpawnTimeCounter import SpawnTimeCounter
 
@@ -42,6 +43,7 @@ EventManager(map={
     RightHandPointingThree(): [KeyTap('Z')],
 
     RightHandGrab(): [KeyTap(Key.shift)]
+    
 }, inverse_map={
         LeftThumbTouchedIndex: LeftThumbReleasedIndex,
         LeftThumbTouchedMiddle: LeftThumbReleasedMiddle,
@@ -67,7 +69,8 @@ while True:
     # Flip the image horizontally for a selfie-view display.
     frame = cv2.flip(frame, 1)    
 
-    left_hand, right_hand = mp_hands.extract_hands(frame=frame)
+    screen = Screen(frame)
+    left_hand, right_hand = mp_hands.extract_hands(screen)
 
     # Make sure to start monitoring gestures after certain 
     # amount of time hands being present on the screen

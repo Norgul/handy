@@ -1,7 +1,7 @@
 from Listeners.Listener import Listener
 from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController
-from cursor_controller import CursorController
+from CursorController import CursorController
 
 class MousePress(Listener):
     def __init__(self, *args) -> None:
