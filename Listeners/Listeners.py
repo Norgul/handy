@@ -125,7 +125,7 @@ class ControlCursor(Listener):
         if not CursorController.coordinates:
             return
     
-        (mouse_x, mouse_y) = cursor_controller.normalize_mouse(*hand.center())
+        (mouse_x, mouse_y) = cursor_controller.normalize_mouse(*hand.bottom_knuckle_center())
 
         # self.smoothen.update(mouse_x, mouse_y)
         # smooth_x, smooth_y = self.smoothen.smooth()

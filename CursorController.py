@@ -30,10 +30,10 @@ class CursorController:
         """
         Draw a rectangle on the screen around finger landmark
         """
-        hand_center_x, hand_center_y = hand.center()
+        x, y = hand.bottom_knuckle_center()
 
         if not CursorController.coordinates:
-            CursorController.coordinates = self.screen.scaled_monitor_coordinates_around(hand_center_x, hand_center_y)
+            CursorController.coordinates = self.screen.scaled_monitor_coordinates_around(x, y)
 
             pygame.mixer.music.load("Effects/cursor_on.mp3")
             pygame.mixer.music.play()
@@ -41,7 +41,7 @@ class CursorController:
         # Draw the rectangle on the frame
         cv2.rectangle(frame, (CursorController.coordinates[0], CursorController.coordinates[1]), (CursorController.coordinates[2], CursorController.coordinates[3]), (255, 255, 255), 3)
         # Draw the circle representing a cursor indicator
-        cv2.circle(frame, (hand_center_x, hand_center_y), 25, (0, 0, 0), cv2.FILLED)
+        cv2.circle(frame, (x, y), 25, (0, 0, 0), cv2.FILLED)
 
 
     def normalize_mouse(self, x, y) -> Tuple[float, float]:
@@ -71,22 +71,19 @@ class CursorController:
             CursorController.spawned_point = None
             return None, None
 
-        frame_height, frame_width, _ = frame.shape
-        cx, cy = int(fingers.middle_tip.x * frame_width), int(fingers.middle_tip.y * frame_height)
-        
-        middle_tip_pixel = (cx, cy)
+        cx, cy = self.screen.coordinates_to_frame_pixels(fingers.middle_tip.x, fingers.middle_tip.y)
         
         if not CursorController.spawned_point:
             CursorController.spawned_point = (cx, cy)
 
-        cv2.line(frame, CursorController.spawned_point, middle_tip_pixel, (255,255,0), 3)
+        cv2.line(frame, CursorController.spawned_point, (cx, cy), (255,255,0), 3)
 
         # Calculate distance between points
-        x_diff_squared = (middle_tip_pixel[0] - CursorController.spawned_point[0])**2
-        y_diff_squared = (middle_tip_pixel[1] - CursorController.spawned_point[1])**2
+        x_diff_squared = (cx - CursorController.spawned_point[0])**2
+        y_diff_squared = (cy - CursorController.spawned_point[1])**2
         distance = math.sqrt(x_diff_squared + y_diff_squared)
         
-        direction_vector = (middle_tip_pixel[0] - CursorController.spawned_point[0], middle_tip_pixel[1] - CursorController.spawned_point[1])
+        direction_vector = (cx - CursorController.spawned_point[0], cy - CursorController.spawned_point[1])
     
         # Calculate speed based on distance
         # You can adjust the scaling factor as needed

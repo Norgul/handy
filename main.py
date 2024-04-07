@@ -71,12 +71,13 @@ while True:
     frame = cv2.flip(frame, 1)    
 
     screen = Screen(frame)
+    # TODO: is there a better way to do this?
     cursor_controller.inject_screen(screen)
 
     left_hand, right_hand = mp_hands.extract_hands(screen)
 
     # Make sure to start monitoring gestures after certain 
-    # amount of time hands being present on the screen
+    # amount of time hands have been present on the screen
     left_hand = left_timer.check(left_hand)
     right_hand = right_timer.check(right_hand)
     
