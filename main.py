@@ -1,16 +1,61 @@
 import cv2
 from EventManager import EventManager
+from Events.LeftHandEvents import CursorActivated, HandSpawnedCursor, LeftThumbReleasedIndex, LeftThumbReleasedMiddle, LeftThumbReleasedPinky, LeftThumbReleasedRing, LeftThumbTouchedIndex, LeftThumbTouchedMiddle, LeftThumbTouchedPinky, LeftThumbTouchedRing
+from Events.RightHandEvents import RightHandGrab, RightHandPointingOne, RightHandPointingThree, RightHandPointingTwo, RightThumbReleasedIndex, RightThumbReleasedMiddle, RightThumbReleasedPinky, RightThumbReleasedRing, RightThumbTouchedIndex, RightThumbTouchedMiddle, RightThumbTouchedPinky, RightThumbTouchedRing
+from Listeners.Listeners import ControlCursor, DrawCursorGrid, KeyPress, KeyRelease, KeyTap, MouseMove, MousePosition, MousePress, MouseRelease, MouseScroll, MouseTap, PointDistance, ResetPoint
+from pynput.mouse import Button
+from pynput.keyboard import Key
 from mp_hands import MpHands
 from cursor_controller import CursorController
 from Gestures import Gestures
 from HandSpawnTimeCounter import SpawnTimeCounter
 
-event_manager = EventManager()
-event_manager.register().register_inverse_events()
+cursor_controller = CursorController()
+
+EventManager(map={
+    #region simple left gestures
+    LeftThumbTouchedIndex(): [MousePress(Button.left)],
+    LeftThumbReleasedIndex(): [MouseRelease(Button.left)],
+    LeftThumbTouchedMiddle(): [MousePress(Button.middle), PointDistance(cursor_controller)],
+    LeftThumbReleasedMiddle(): [MouseRelease(Button.middle), ResetPoint(cursor_controller)],
+    LeftThumbTouchedRing(): [],
+    LeftThumbReleasedRing(): [],
+    LeftThumbTouchedPinky(): [],
+    LeftThumbReleasedPinky(): [],
+    #endregion simple left gestures
+
+    #region simple right gestures
+    RightThumbTouchedIndex(): [KeyPress('G')],
+    RightThumbReleasedIndex(): [KeyRelease('G')],
+    RightThumbTouchedMiddle(): [KeyPress('R')],
+    RightThumbReleasedMiddle(): [KeyRelease('R')],
+    RightThumbTouchedRing(): [KeyPress('S')],
+    RightThumbReleasedRing(): [KeyRelease('S')],
+    RightThumbTouchedPinky(): [KeyPress('E')],
+    RightThumbReleasedPinky(): [KeyRelease('E')],
+    #region simple right gestures
+
+    CursorActivated(): [DrawCursorGrid(cursor_controller), ControlCursor(cursor_controller)],
+
+    RightHandPointingOne(): [KeyTap('X')],
+    RightHandPointingTwo(): [KeyTap('Y')],
+    RightHandPointingThree(): [KeyTap('Z')],
+
+    RightHandGrab(): [KeyTap(Key.shift)]
+}, inverse_map={
+        LeftThumbTouchedIndex: LeftThumbReleasedIndex,
+        LeftThumbTouchedMiddle: LeftThumbReleasedMiddle,
+        LeftThumbTouchedPinky: LeftThumbReleasedPinky,
+        LeftThumbTouchedRing: LeftThumbReleasedRing,
+        RightThumbTouchedIndex: RightThumbReleasedIndex,
+        RightThumbTouchedMiddle: RightThumbReleasedMiddle,
+        RightThumbTouchedPinky: RightThumbReleasedPinky,
+        RightThumbTouchedRing: RightThumbReleasedRing,
+}
+).register()
 
 mp_hands = MpHands()
 cap = cv2.VideoCapture(0)
-cursor_controller = CursorController()
 
 left_timer = SpawnTimeCounter(spawn_timeout=0.3)
 right_timer = SpawnTimeCounter(spawn_timeout=0.3)
@@ -30,7 +75,15 @@ while True:
     left_hand = left_timer.check(left_hand)
     right_hand = right_timer.check(right_hand)
     
-    Gestures(frame, cursor_controller).load(left_hand, right_hand)
+    # Draw bounding boxes
+    # if left_hand:
+    #     top_left_x, top_left_y, bottom_right_x, bottom_right_y = left_hand.bounding_box()
+    #     cv2.rectangle(frame, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 255, 0), 2)
+    # if right_hand:
+    #     top_left_x, top_left_y, bottom_right_x, bottom_right_y = right_hand.bounding_box()
+    #     cv2.rectangle(frame, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 255, 0), 2)
+
+    Gestures(frame).load(left_hand, right_hand)
     
     cv2.imshow('MediaPipe Hands', frame)
     # Use Esc to exit

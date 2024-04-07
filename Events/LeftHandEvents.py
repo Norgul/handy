@@ -30,3 +30,6 @@ class LeftThumbReleasedRing(Event):
 
 class HandSpawnedCursor(Event):
     pass
+
+class CursorActivated(Event):
+    pass

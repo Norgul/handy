@@ -8,16 +8,23 @@ class Event(ABC):
     def __init__(self) -> None:
         self.inverse_event: self = None
         self.listeners: List[Listener] = []
+        self.execute_when = True
         self.executed = False
 
     @classmethod
-    def dispatch(self, case: bool, **kwargs) -> None:
+    def when(self, execute_when: bool) -> 'Event':
+        self.execute_when = execute_when
+
+        return self
+
+    @classmethod
+    def dispatch(self, **kwargs) -> 'Event':
         """
         Flip-flop mechanism for dispatching events. As long as case is true, it will execute
         listeners. Inverse event will only trigger if original event was once triggered
         to prevent continuous triggering of inverse events when nothing is happening.
         """
-        if case:
+        if self.execute_when:
             for listener in self.listeners:
                 listener.execute(self, **kwargs)
                     
@@ -27,7 +34,9 @@ class Event(ABC):
             self.executed = False
             
             if self.inverse_event:
-                self.inverse_event.dispatch(True)
+                self.inverse_event.dispatch(**kwargs)
+
+        return self
 
     @classmethod
     def register_inverse(self, event: Type['Event']) -> None:

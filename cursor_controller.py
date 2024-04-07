@@ -3,9 +3,14 @@ import cv2
 import pyautogui
 import pygame
 from typing import Tuple
+import math
 
 class CursorController:
         
+    # Where to start measuring distance from. 
+    # TODO: This should be refactored to support many of these.
+    spawned_point = None
+
     def __init__(self, scale_percentage: int = 50) -> None:
         self.scale_percentage = scale_percentage
         # Is rectangle drawn
@@ -24,12 +29,12 @@ class CursorController:
         pygame.init()
         
 
-    def draw_when_true(self, frame, case: bool, hand: Hand) -> None:
+    def draw_bounds(self, frame, hand: Hand) -> None:
         """
         Given some case, draw a rectangle on the screen around finger landmark
         """
         # Case is false, so just reset the variables
-        if not case:
+        if not hand.cursor_activated:
             self.drawn = False
             self.calculated = True
             return
@@ -43,8 +48,8 @@ class CursorController:
 
             self.calculated = True
             
-            pygame.mixer.music.load("Effects/cursor_on.mp3")
-            pygame.mixer.music.play()
+            # pygame.mixer.music.load("Effects/cursor_on.mp3")
+            # pygame.mixer.music.play()
 
         # We calculated the coordinates, we can continue drawing this on the screen as long as you don't reset it
         if self.calculated:
@@ -124,3 +129,64 @@ class CursorController:
         mouse_y = normalized_y * self.monitor_width
         
         return (mouse_x, mouse_y)
+
+    def calculate_distance_from_point(self, frame, hand: Hand) -> Tuple[float, float]:
+        fingers = hand.fingers
+
+        if not hand.touching(fingers.thumb_tip, fingers.middle_tip):
+            CursorController.spawned_point = None
+            return None, None
+
+        frame_height, frame_width, _ = frame.shape
+        cx, cy = int(fingers.middle_tip.x * frame_width), int(fingers.middle_tip.y * frame_height)
+        
+        middle_tip_pixel = (cx, cy)
+        
+        if not CursorController.spawned_point:
+            CursorController.spawned_point = (cx, cy)
+
+        cv2.line(frame, CursorController.spawned_point, middle_tip_pixel, (255,255,0), 3)
+
+        # Calculate distance between points
+        x_diff_squared = (middle_tip_pixel[0] - CursorController.spawned_point[0])**2
+        y_diff_squared = (middle_tip_pixel[1] - CursorController.spawned_point[1])**2
+        distance = math.sqrt(x_diff_squared + y_diff_squared)
+        
+        direction_vector = (middle_tip_pixel[0] - CursorController.spawned_point[0], middle_tip_pixel[1] - CursorController.spawned_point[1])
+    
+        # Calculate speed based on distance
+        # You can adjust the scaling factor as needed
+        speed = (distance/100) * 0.1  # Adjust as needed
+        dx = direction_vector[0] * speed
+        dy = direction_vector[1] * speed
+
+        return dx, dy
+
+
+# TODO
+class SmoothPoints:
+
+    max_points = 5
+    buffer = []
+    total_x = 0
+    total_y = 0
+
+    def update(self, x, y):
+        SmoothPoints.buffer.append((x, y))
+        SmoothPoints.total_x += x
+        SmoothPoints.total_y += y
+
+        if len(self.buffer) >= SmoothPoints.max_points:
+            old_x, old_y = SmoothPoints.buffer[0]
+            SmoothPoints.total_x -= old_x
+            SmoothPoints.total_y -= old_y
+
+            del SmoothPoints.buffer[0]
+
+
+
+    def smooth(self):
+        smooth_x = SmoothPoints.total_x / min(len(SmoothPoints.buffer), SmoothPoints.max_points)
+        smooth_y = SmoothPoints.total_y / min(len(SmoothPoints.buffer), SmoothPoints.max_points)
+
+        return smooth_x, smooth_y

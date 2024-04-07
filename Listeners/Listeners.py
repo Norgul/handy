@@ -2,8 +2,13 @@ from Listeners.Listener import Listener
 from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController
 
+from cursor_controller import CursorController
+
 class MousePress(Listener):
-    def handle(self) -> None:
+    def __init__(self, *args) -> None:
+        super().__init__(*args, flip_flop=True)
+
+    def handle(self, **kwargs) -> None:
         button = self.args[0]
         
         mouse = MouseController()
@@ -12,16 +17,19 @@ class MousePress(Listener):
         print("Mouse press", button)
 
 class MouseRelease(Listener):
-    def handle(self) -> None:
+    def __init__(self, *args) -> None:
+        super().__init__(*args, flip_flop=True)
+
+    def handle(self, **kwargs) -> None:
         button = self.args[0]
         
         mouse = MouseController()
         mouse.release(button)
         
         print("Mouse release", button)
-        
+
 class MouseTap(Listener):
-    def handle(self) -> None:
+    def handle(self, **kwargs) -> None:
 
         button = self.args[0]
         
@@ -60,7 +68,10 @@ class MouseScroll(Listener):
         print("Mouse scroll", x, y)
         
 class KeyPress(Listener):
-    def handle(self) -> None:
+    def __init__(self, *args) -> None:
+        super().__init__(*args, flip_flop=True)
+
+    def handle(self, **kwargs) -> None:
         key = self.args[0]
         
         keyboard = KeyboardController()
@@ -69,7 +80,10 @@ class KeyPress(Listener):
         print("Key press", key)
         
 class KeyRelease(Listener):
-    def handle(self) -> None:
+    def __init__(self, *args) -> None:
+        super().__init__(*args, flip_flop=True)
+
+    def handle(self, **kwargs) -> None:
         key = self.args[0]
         
         keyboard = KeyboardController()
@@ -78,10 +92,66 @@ class KeyRelease(Listener):
         print("Key release", key)
 
 class KeyTap(Listener):
-    def handle(self) -> None:
+    def __init__(self, *args) -> None:
+        super().__init__(*args, flip_flop=True)
+
+
+    def handle(self, **kwargs) -> None:
         key = self.args[0]
         
         keyboard = KeyboardController()
         keyboard.press(key)
         print("Key tapped", key)
         keyboard.release(key)
+
+
+class DrawCursorGrid(Listener):
+    def handle(self, **kwargs) -> None:
+        
+        cursor_controller: CursorController = self.args[0]
+        frame = kwargs.get('frame')
+        hand = kwargs.get('hand')
+
+        cursor_controller.draw_bounds(frame, hand)
+
+
+class ControlCursor(Listener):
+    def handle(self, **kwargs) -> None:
+        
+        cursor_controller: CursorController = self.args[0]
+        frame = kwargs.get('frame')
+        hand = kwargs.get('hand')
+
+        if not cursor_controller.drawn:
+            return
+    
+        (mouse_x, mouse_y) = cursor_controller.move_mouse_within_rectangle(frame, hand.fingers.index_bottom.x, hand.fingers.index_bottom.y)
+
+        # self.smoothen.update(mouse_x, mouse_y)
+        # smooth_x, smooth_y = self.smoothen.smooth()
+        
+        mouse = MouseController()
+        mouse.position = (mouse_x, mouse_y)
+
+
+class PointDistance(Listener):
+    def handle(self, **kwargs) -> None:
+        
+        cursor_controller: CursorController = self.args[0]
+        frame = kwargs.get('frame')
+        hand = kwargs.get('hand')
+    
+        (mouse_x, mouse_y) = cursor_controller.calculate_distance_from_point(frame, hand)
+
+        # self.smoothen.update(mouse_x, mouse_y)
+        # smooth_x, smooth_y = self.smoothen.smooth()
+        
+        mouse = MouseController()
+        mouse.position = (mouse_x, mouse_y)
+
+
+class ResetPoint(Listener):
+    def handle(self, **kwargs) -> None:
+        CursorController.spawned_point = None
+
+
