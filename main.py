@@ -37,6 +37,7 @@ EventManager(map={
     #region simple right gestures
 
     CursorActivated(): [DrawCursorGrid(cursor_controller), ControlCursor(cursor_controller)],
+    CursorDeactivated(): [ResetCursorGrid(cursor_controller)],
 
     RightHandPointingOne(): [KeyTap('X')],
     RightHandPointingTwo(): [KeyTap('Y')],
@@ -70,6 +71,8 @@ while True:
     frame = cv2.flip(frame, 1)    
 
     screen = Screen(frame)
+    cursor_controller.inject_screen(screen)
+
     left_hand, right_hand = mp_hands.extract_hands(screen)
 
     # Make sure to start monitoring gestures after certain 

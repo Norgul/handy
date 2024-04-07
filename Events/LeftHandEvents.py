@@ -33,3 +33,6 @@ class HandSpawnedCursor(Event):
 
 class CursorActivated(Event):
     pass
+
+class CursorDeactivated(Event):
+    pass

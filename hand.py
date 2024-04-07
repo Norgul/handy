@@ -29,17 +29,20 @@ class Hand:
         """
         top_left_x, top_left_y, bottom_right_x, bottom_right_y = self.fingers.landmark_coordinates()
 
-        return self.screen.double_coordinates_to_pixels(self.screen.frame_width, self.screen.frame_height, top_left_x, top_left_y, bottom_right_x, bottom_right_y)
+        top_left_x, top_left_y = self.screen.coordinates_to_frame_pixels(top_left_x, top_left_y)
+        bottom_right_x, bottom_right_y = self.screen.coordinates_to_frame_pixels(bottom_right_x, bottom_right_y)
+
+        return top_left_x, top_left_y, bottom_right_x, bottom_right_y
 
 
-    def center(self) -> Tuple[float, float]:
+    def center(self) -> Tuple[int, int]:
         
         top_left_x, top_left_y, bottom_right_x, bottom_right_y = self.bounding_box()
         
         center_x = (top_left_x + bottom_right_x) / 2
         center_y = (top_left_y + bottom_right_y) / 2
         
-        return center_x, center_y
+        return int(center_x), int(center_y)
 
 
     def size(self) -> float:

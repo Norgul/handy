@@ -1,5 +1,5 @@
-from Events.LeftHandEvents import CursorActivated, LeftThumbTouchedIndex, LeftThumbTouchedMiddle, LeftThumbTouchedPinky, LeftThumbTouchedRing
-from Events.RightHandEvents import RightHandGrab, RightHandPointingOne, RightHandPointingThree, RightHandPointingTwo, RightThumbTouchedIndex, RightThumbTouchedMiddle, RightThumbTouchedPinky, RightThumbTouchedRing
+from Events.LeftHandEvents import *
+from Events.RightHandEvents import *
 from Hand import Hand
 
 class Gestures():
@@ -24,6 +24,7 @@ class Gestures():
         LeftThumbTouchedPinky.when(hand.touching(fingers.thumb_tip, fingers.pinky_tip)).dispatch()
 
         CursorActivated.when(Hand.cursor_activated).dispatch(frame=self.frame, hand=hand)    
+        CursorDeactivated.when(not Hand.cursor_activated).dispatch(frame=self.frame, hand=hand)    
 
     def load_right_hand(self, hand: Hand) -> None:
         self.right_hand_up = hand.up()

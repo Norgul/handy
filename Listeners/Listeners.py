@@ -1,3 +1,4 @@
+from Hand import Hand
 from Listeners.Listener import Listener
 from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController
@@ -119,12 +120,12 @@ class ControlCursor(Listener):
         
         cursor_controller: CursorController = self.args[0]
         frame = kwargs.get('frame')
-        hand = kwargs.get('hand')
+        hand: Hand = kwargs.get('hand')
 
-        if not cursor_controller.drawn:
+        if not CursorController.coordinates:
             return
     
-        (mouse_x, mouse_y) = cursor_controller.move_mouse_within_rectangle(frame, hand.fingers.index_bottom.x, hand.fingers.index_bottom.y)
+        (mouse_x, mouse_y) = cursor_controller.normalize_mouse(*hand.center())
 
         # self.smoothen.update(mouse_x, mouse_y)
         # smooth_x, smooth_y = self.smoothen.smooth()
@@ -154,3 +155,6 @@ class ResetPoint(Listener):
         CursorController.spawned_point = None
 
 
+class ResetCursorGrid(Listener):
+    def handle(self, **kwargs) -> None:
+        CursorController.coordinates = None
