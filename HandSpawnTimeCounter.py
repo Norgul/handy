@@ -1,6 +1,6 @@
 import time
 from typing import Union
-from Hand import Hand
+from Models.Hand import Hand
 
 class SpawnTimeCounter:
 

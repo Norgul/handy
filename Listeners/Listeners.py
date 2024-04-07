@@ -1,4 +1,4 @@
-from Hand import Hand
+from Models.Hand import Hand
 from Listeners.Listener import Listener
 from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController

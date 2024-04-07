@@ -6,7 +6,7 @@ from Listeners.Listeners import *
 from pynput.mouse import Button
 from pynput.keyboard import Key
 from Screen import Screen
-from mp_hands import MpHands
+from Models.MpHands import MpHands
 from CursorController import CursorController
 from Gestures import Gestures
 from HandSpawnTimeCounter import SpawnTimeCounter

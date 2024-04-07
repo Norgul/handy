@@ -1,4 +1,4 @@
-from Hand import Hand
+from Models.Hand import Hand
 import cv2
 import pyautogui
 import pygame
