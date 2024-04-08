@@ -4,12 +4,13 @@ import numpy as np
 
 from Screen import Screen
 
+
 class Fingers:
     def __init__(self, hand_landmarks):
         if not hand_landmarks:
             print("WARNING: No hand landmarks present")
             return
-        
+
         self.hand_landmarks = hand_landmarks
 
         self.thumb_tip = hand_landmarks.landmark[4]
@@ -38,7 +39,7 @@ class Fingers:
 
     def thumb_pointing_left(self) -> bool:
         return self.thumb_tip.x < self.thumb_knuckle.x
-        
+
     def thumb_pointing_right(self) -> bool:
         return self.thumb_tip.x > self.thumb_knuckle.x
 
@@ -68,15 +69,19 @@ class Fingers:
 
     def pinky_down(self) -> bool:
         return self.pinky_tip.y > self.pinky_knuckle.y
+
     # endregion fingers
 
     def circle_tip(self, screen: Screen, landmark, color) -> None:
         """
         Draw a circle around a particular landmark point
         """
-        center = (int(landmark.x * screen.frame_width), int(landmark.y * screen.frame_height))
+        center = (
+            int(landmark.x * screen.frame_width),
+            int(landmark.y * screen.frame_height),
+        )
         cv2.circle(screen.frame, center, 25, color, cv2.FILLED)
-        
+
     def landmark_coordinates(self) -> Tuple[float, float, float, float]:
         """
         Traverse all landmark coordinates to find top-left and bottom-right ones

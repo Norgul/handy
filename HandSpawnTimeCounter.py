@@ -2,6 +2,7 @@ import time
 from typing import Union
 from Models.Hand import Hand
 
+
 class SpawnTimeCounter:
 
     hand_shown = None
@@ -14,7 +15,7 @@ class SpawnTimeCounter:
         if not hand:
             self.hand_shown = None
             return
-    
+
         # Initialize counter
         if not self.hand_shown:
             self.hand_shown = time.time()
@@ -22,5 +23,5 @@ class SpawnTimeCounter:
         # Not yet available, unset hand
         if time.time() - self.hand_shown < self.spawn_timeout:
             return None
-        
+
         return hand

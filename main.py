@@ -13,39 +13,45 @@ from HandSpawnTimeCounter import SpawnTimeCounter
 
 cursor_controller = CursorController()
 
-EventManager(map={
-    #region simple left gestures
-    LeftThumbTouchedIndex(): [MousePress(Button.left)],
-    LeftThumbReleasedIndex(): [MouseRelease(Button.left)],
-    LeftThumbTouchedMiddle(): [MousePress(Button.middle), PointDistance(cursor_controller)],
-    LeftThumbReleasedMiddle(): [MouseRelease(Button.middle), ResetPoint(cursor_controller)],
-    LeftThumbTouchedRing(): [],
-    LeftThumbReleasedRing(): [],
-    LeftThumbTouchedPinky(): [],
-    LeftThumbReleasedPinky(): [],
-    #endregion simple left gestures
-
-    #region simple right gestures
-    RightThumbTouchedIndex(): [KeyPress('G')],
-    RightThumbReleasedIndex(): [KeyRelease('G')],
-    RightThumbTouchedMiddle(): [KeyPress('R')],
-    RightThumbReleasedMiddle(): [KeyRelease('R')],
-    RightThumbTouchedRing(): [KeyPress('S')],
-    RightThumbReleasedRing(): [KeyRelease('S')],
-    RightThumbTouchedPinky(): [KeyPress('E')],
-    RightThumbReleasedPinky(): [KeyRelease('E')],
-    #region simple right gestures
-
-    CursorActivated(): [DrawCursorGrid(cursor_controller), ControlCursor(cursor_controller)],
-    CursorDeactivated(): [ResetCursorGrid(cursor_controller)],
-
-    RightHandPointingOne(): [KeyTap('X')],
-    RightHandPointingTwo(): [KeyTap('Y')],
-    RightHandPointingThree(): [KeyTap('Z')],
-
-    RightHandGrab(): [KeyTap(Key.shift)]
-    
-}, inverse_map={
+EventManager(
+    map={
+        # region simple left gestures
+        LeftThumbTouchedIndex(): [MousePress(Button.left)],
+        LeftThumbReleasedIndex(): [MouseRelease(Button.left)],
+        LeftThumbTouchedMiddle(): [
+            MousePress(Button.middle),
+            PointDistance(cursor_controller),
+        ],
+        LeftThumbReleasedMiddle(): [
+            MouseRelease(Button.middle),
+            ResetPoint(cursor_controller),
+        ],
+        LeftThumbTouchedRing(): [],
+        LeftThumbReleasedRing(): [],
+        LeftThumbTouchedPinky(): [],
+        LeftThumbReleasedPinky(): [],
+        # endregion simple left gestures
+        # region simple right gestures
+        RightThumbTouchedIndex(): [KeyPress("G")],
+        RightThumbReleasedIndex(): [KeyRelease("G")],
+        RightThumbTouchedMiddle(): [KeyPress("R")],
+        RightThumbReleasedMiddle(): [KeyRelease("R")],
+        RightThumbTouchedRing(): [KeyPress("S")],
+        RightThumbReleasedRing(): [KeyRelease("S")],
+        RightThumbTouchedPinky(): [KeyPress("E")],
+        RightThumbReleasedPinky(): [KeyRelease("E")],
+        # region simple right gestures
+        CursorActivated(): [
+            DrawCursorGrid(cursor_controller),
+            ControlCursor(cursor_controller),
+        ],
+        CursorDeactivated(): [ResetCursorGrid(cursor_controller)],
+        RightHandPointingOne(): [KeyTap("X")],
+        RightHandPointingTwo(): [KeyTap("Y")],
+        RightHandPointingThree(): [KeyTap("Z")],
+        RightHandGrab(): [KeyTap(Key.shift)],
+    },
+    inverse_map={
         LeftThumbTouchedIndex: LeftThumbReleasedIndex,
         LeftThumbTouchedMiddle: LeftThumbReleasedMiddle,
         LeftThumbTouchedPinky: LeftThumbReleasedPinky,
@@ -54,9 +60,9 @@ EventManager(map={
         RightThumbTouchedMiddle: RightThumbReleasedMiddle,
         RightThumbTouchedPinky: RightThumbReleasedPinky,
         RightThumbTouchedRing: RightThumbReleasedRing,
-
-        CursorActivated: CursorDeactivated
-})
+        CursorActivated: CursorDeactivated,
+    },
+)
 
 mp_hands = MpHands()
 cap = cv2.VideoCapture(0)
@@ -68,21 +74,21 @@ while True:
     success, frame = cap.read()
     if not success:
         continue
-    
+
     # Flip the image horizontally for a selfie-view display.
-    frame = cv2.flip(frame, 1)    
+    frame = cv2.flip(frame, 1)
 
     screen = Screen(frame)
     # TODO: is there a better way to do this?
     cursor_controller.inject_screen(screen)
 
     left_hand, right_hand = mp_hands.extract_hands(screen)
- 
-    # Make sure to start monitoring gestures after certain 
+
+    # Make sure to start monitoring gestures after certain
     # amount of time hands have been present on the screen
     left_hand = left_timer.check(left_hand)
     right_hand = right_timer.check(right_hand)
-    
+
     # Draw bounding boxes
     # if left_hand:
     #     top_left_x, top_left_y, bottom_right_x, bottom_right_y = left_hand.bounding_box()
@@ -92,10 +98,10 @@ while True:
     #     cv2.rectangle(frame, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 255, 0), 2)
 
     Gestures(frame).load(left_hand, right_hand)
-    
-    cv2.imshow('MediaPipe Hands', frame)
+
+    cv2.imshow("MediaPipe Hands", frame)
     # Use Esc to exit
     if cv2.waitKey(5) & 0xFF == 27:
         break
-    
+
 cap.release()

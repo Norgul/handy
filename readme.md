@@ -104,6 +104,8 @@ I welcome all to join the project and contribute!
 Also, feel free to reach out with any suggestions, bug reports or objections, those are valuable contributions as well,
 and are inspiring me to continue.
 
+Using [Black formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter) for code formatting.
+
 Some of TODOs and ideas:
 - Stabilize and smoothen the mouse movement (having a hand in front of the camera perfectly still is rather hard)
 - Fill out the rest of the gestures still unassigned (probably also test out with Blender what makes the most sense)

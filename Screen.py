@@ -1,7 +1,8 @@
 from typing import Tuple
 import pyautogui
 import numpy as np
-import math 
+import math
+
 
 class Screen:
 
@@ -22,40 +23,42 @@ class Screen:
         # Make sure to calculate just once upon instantiation
         if not Screen.monitor_width or not Screen.monitor_height:
             Screen.monitor_width, Screen.monitor_height = pyautogui.size()
-        
 
     def coordinates_to_frame_pixels(self, x: float, y: float) -> Tuple[int, int]:
         return self.coordinates_to_pixels(x, y, Screen.frame_width, Screen.frame_height)
-    
 
-    def coordinates_to_pixels(self, x: float, y: float, width: int, height: int) -> Tuple[int, int]:
+    def coordinates_to_pixels(
+        self, x: float, y: float, width: int, height: int
+    ) -> Tuple[int, int]:
         """
-        Take coordinates in 0-1 range and scale them up to 
-        dimension in pixels for a given width/height 
+        Take coordinates in 0-1 range and scale them up to
+        dimension in pixels for a given width/height
         """
         return int(x * width), int(y * height)
-    
 
     def pixels_to_frame_coordinates(self, x: float, y: float) -> Tuple[int, int]:
         return self.pixels_to_coordinates(x, y, Screen.frame_width, Screen.frame_height)
-    
 
-    def pixels_to_coordinates(self, x: float, y: float, width: int, height: int) -> Tuple[float, float]:
+    def pixels_to_coordinates(
+        self, x: float, y: float, width: int, height: int
+    ) -> Tuple[float, float]:
         """
-        Take coordinates in pixel range and scale them down to 
-        0-1 dimension for a given width/height 
+        Take coordinates in pixel range and scale them down to
+        0-1 dimension for a given width/height
         """
         return x / width, y / height
-
 
     def scaled_monitor_coordinates_around(self, x: int, y: int):
         """
         Draw a scaled monitor rectangle around a given point
         """
-        scaled_monitor_width, scaled_monitor_height, Screen.scale_factor = self.scale_monitor_to_frame(self.scale_percentage)
-        
-        return self.calculate_rectangle_coordinates(scaled_monitor_width, scaled_monitor_height, x, y)
+        scaled_monitor_width, scaled_monitor_height, Screen.scale_factor = (
+            self.scale_monitor_to_frame(self.scale_percentage)
+        )
 
+        return self.calculate_rectangle_coordinates(
+            scaled_monitor_width, scaled_monitor_height, x, y
+        )
 
     def scale_monitor_to_frame(self, percentage: int) -> Tuple[int, int, float]:
         """
@@ -67,9 +70,10 @@ class Screen:
         scaled_height = math.ceil(Screen.monitor_height * scale_factor)
 
         return scaled_width, scaled_height, scale_factor
-    
 
-    def calculate_rectangle_coordinates(self, scaled_width, scaled_height, center_x, center_y) -> Tuple[int, int, int, int]:
+    def calculate_rectangle_coordinates(
+        self, scaled_width, scaled_height, center_x, center_y
+    ) -> Tuple[int, int, int, int]:
         """
         Calculate rectangle coordinates to position it around center coordinates,
         but keep it within frame bounds if it was to be drawn outside a frame.
