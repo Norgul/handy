@@ -23,8 +23,7 @@ class Gestures():
         LeftThumbTouchedRing.when(hand.touching(fingers.thumb_tip, fingers.ring_tip)).dispatch()
         LeftThumbTouchedPinky.when(hand.touching(fingers.thumb_tip, fingers.pinky_tip)).dispatch()
 
-        CursorActivated.when(LeftHand.cursor_activated).dispatch(hand=hand)    
-        CursorDeactivated.when(not LeftHand.cursor_activated).dispatch(frame=self.frame, hand=hand)    
+        CursorActivated.when(LeftHand.cursor_activated).dispatch(frame=self.frame, hand=hand)    
 
     def load_right_hand(self, hand: RightHand) -> None:
         self.right_hand_up = hand.up()

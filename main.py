@@ -54,6 +54,8 @@ EventManager(map={
         RightThumbTouchedMiddle: RightThumbReleasedMiddle,
         RightThumbTouchedPinky: RightThumbReleasedPinky,
         RightThumbTouchedRing: RightThumbReleasedRing,
+
+        CursorActivated: CursorDeactivated
 })
 
 mp_hands = MpHands()
@@ -75,7 +77,7 @@ while True:
     cursor_controller.inject_screen(screen)
 
     left_hand, right_hand = mp_hands.extract_hands(screen)
-
+ 
     # Make sure to start monitoring gestures after certain 
     # amount of time hands have been present on the screen
     left_hand = left_timer.check(left_hand)

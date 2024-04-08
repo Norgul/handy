@@ -20,9 +20,9 @@ class Event(ABC):
     @classmethod
     def dispatch(self, **kwargs) -> 'Event':
         """
-        Flip-flop mechanism for dispatching events. As long as case is true, it will execute
-        listeners. Inverse event will only trigger if original event was once triggered
-        to prevent continuous triggering of inverse events when nothing is happening.
+        Dispatching events. As long as case is true, it will execute registered listeners. 
+        Inverse event will only trigger if original event was once triggered to prevent 
+        continuous triggering of inverse events when nothing is happening.
         """
         if self.execute_when:
             for listener in self.listeners:

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Tuple
 from Models.Fingers import Fingers
-import numpy as np
 import math
 
 from Screen import Screen
@@ -144,8 +143,6 @@ class Hand(ABC):
 
         return count >= 4
 
-
-
 class LeftHand(Hand):
     was_recently_up: bool = False
     up_counter: int = 0
@@ -156,7 +153,7 @@ class LeftHand(Hand):
         super().__init__(screen, mp_hands, landmarks)
 
         self.up_count()
-        self.should_activate_grid()
+        self.should_activate_cursor()
 
 
     def facing_forward(self) -> bool:
@@ -181,12 +178,11 @@ class LeftHand(Hand):
                 LeftHand.was_recently_up = False
 
 
-    def should_activate_grid(self) -> None:
+    def should_activate_cursor(self) -> None:
         if LeftHand.up_counter % 2 == 0:
             LeftHand.cursor_activated = not LeftHand.cursor_activated
             LeftHand.up_counter -= 1
             
-
 class RightHand(Hand):
 
     def __init__(self, screen: Screen, mp_hands, landmarks) -> None:
