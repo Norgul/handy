@@ -132,9 +132,7 @@ class ControlCursor(Listener):
         if not CursorController.coordinates:
             return
 
-        (mouse_x, mouse_y) = cursor_controller.interpolate_mouse(
-            *hand.bottom_knuckle_center()
-        )
+        (mouse_x, mouse_y) = cursor_controller.interpolate_mouse(*hand.bottom_knuckle_center())
 
         # self.smoothen.update(mouse_x, mouse_y)
         # smooth_x, smooth_y = self.smoothen.smooth()
@@ -150,9 +148,7 @@ class PointDistance(Listener):
         frame = kwargs.get("frame")
         hand = kwargs.get("hand")
 
-        (mouse_x, mouse_y) = cursor_controller.calculate_distance_from_point(
-            frame, hand
-        )
+        (mouse_x, mouse_y) = cursor_controller.calculate_distance_from_point(frame, hand)
 
         # self.smoothen.update(mouse_x, mouse_y)
         # smooth_x, smooth_y = self.smoothen.smooth()

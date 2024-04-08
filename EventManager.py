@@ -5,9 +5,7 @@ from Listeners.Listener import Listener
 
 class EventManager:
 
-    def __init__(
-        self, map: dict[Event, List[Listener]], inverse_map: dict[Event, Listener]
-    ) -> None:
+    def __init__(self, map: dict[Event, List[Listener]], inverse_map: dict[Event, Listener]) -> None:
         self.map = map
         self.inverse_map = inverse_map
 

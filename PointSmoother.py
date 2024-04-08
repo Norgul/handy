@@ -18,11 +18,7 @@ class PointSmoother:
             del PointSmoother.buffer[0]
 
     def smooth(self):
-        smooth_x = PointSmoother.total_x / min(
-            len(PointSmoother.buffer), PointSmoother.max_points
-        )
-        smooth_y = PointSmoother.total_y / min(
-            len(PointSmoother.buffer), PointSmoother.max_points
-        )
+        smooth_x = PointSmoother.total_x / min(len(PointSmoother.buffer), PointSmoother.max_points)
+        smooth_y = PointSmoother.total_y / min(len(PointSmoother.buffer), PointSmoother.max_points)
 
         return smooth_x, smooth_y

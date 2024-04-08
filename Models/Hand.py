@@ -33,16 +33,10 @@ class Hand(ABC):
         """
         Hand bounding box dimensions
         """
-        top_left_x, top_left_y, bottom_right_x, bottom_right_y = (
-            self.fingers.landmark_coordinates()
-        )
+        top_left_x, top_left_y, bottom_right_x, bottom_right_y = self.fingers.landmark_coordinates()
 
-        top_left_x, top_left_y = self.screen.coordinates_to_frame_pixels(
-            top_left_x, top_left_y
-        )
-        bottom_right_x, bottom_right_y = self.screen.coordinates_to_frame_pixels(
-            bottom_right_x, bottom_right_y
-        )
+        top_left_x, top_left_y = self.screen.coordinates_to_frame_pixels(top_left_x, top_left_y)
+        bottom_right_x, bottom_right_y = self.screen.coordinates_to_frame_pixels(bottom_right_x, bottom_right_y)
 
         return top_left_x, top_left_y, bottom_right_x, bottom_right_y
 
@@ -121,23 +115,14 @@ class Hand(ABC):
         Check if two landmark points are touching with a given radius
         """
         # Scale the landmark points to match the frame dimensions
-        x1, y1 = self.screen.coordinates_to_frame_pixels(
-            finger_landmark1.x, finger_landmark1.y
-        )
-        x2, y2 = self.screen.coordinates_to_frame_pixels(
-            finger_landmark2.x, finger_landmark2.y
-        )
+        x1, y1 = self.screen.coordinates_to_frame_pixels(finger_landmark1.x, finger_landmark1.y)
+        x2, y2 = self.screen.coordinates_to_frame_pixels(finger_landmark2.x, finger_landmark2.y)
 
         # Calculate the distance between the two points
         dist = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
         # If the distance is less than or equal to the sum of their radii, they are touching
-        return (
-            dist <= (2 * radius)
-            and not self.grab()
-            and self.uprightish()
-            and self.facing_forward()
-        )
+        return dist <= (2 * radius) and not self.grab() and self.uprightish() and self.facing_forward()
 
     def uprightish(self) -> bool:
         """

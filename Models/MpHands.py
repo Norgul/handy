@@ -37,9 +37,7 @@ class MpHands:
         left_landmarks = []
         right_landmarks = []
 
-        for hand, landmark in zip(
-            results.multi_handedness, results.multi_hand_landmarks
-        ):
+        for hand, landmark in zip(results.multi_handedness, results.multi_hand_landmarks):
             hand_type = hand.classification[0].label
 
             if hand_type == "Left":
@@ -49,9 +47,7 @@ class MpHands:
 
         return left_landmarks, right_landmarks
 
-    def init_hand(
-        self, screen: Screen, landmarks, color, is_left: bool
-    ) -> Union[Hand, None]:
+    def init_hand(self, screen: Screen, landmarks, color, is_left: bool) -> Union[Hand, None]:
         if not landmarks:
             return None
 

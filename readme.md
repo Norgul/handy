@@ -11,8 +11,8 @@ To try it out, just run the main function and have fun. When camera starts, put 
 ### Left hand
 
 - `Cursor mode` (or rather, hand operated cursor) - make a fist, and then open your hand fully (for a greater 
-cool effect do it like you're throwing sand in someone's face, whoosh!). Smaller monitor representation will show up 
-on the screen, and you can move mouse around it.
+cool effect do it like you're throwing sand in someone's face, whoosh!). Your monitor will be represented in smaller 
+scale on the screen, and you can move hand within those bounds to control the mouse.
 
 - `Thumb + Index` touch - left mouse click (as long as you hold them together, click is active)
 - `Thumb + Middle` touch - middle mouse click with a moving gesture. To put it in a human-readable terms, this will enable 
@@ -104,7 +104,8 @@ I welcome all to join the project and contribute!
 Also, feel free to reach out with any suggestions, bug reports or objections, those are valuable contributions as well,
 and are inspiring me to continue.
 
-Using [Black formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter) for code formatting.
+Using [Black formatter](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter) for code formatting,
+but set with 119 line length within `pyproject.toml` file.
 
 Some of TODOs and ideas:
 - Stabilize and smoothen the mouse movement (having a hand in front of the camera perfectly still is rather hard)

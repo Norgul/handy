@@ -34,9 +34,7 @@ class CursorController:
         x, y = hand.bottom_knuckle_center()
 
         if not CursorController.coordinates:
-            CursorController.coordinates = (
-                self.screen.scaled_monitor_coordinates_around(x, y)
-            )
+            CursorController.coordinates = self.screen.scaled_monitor_coordinates_around(x, y)
 
             pygame.mixer.music.load("Effects/cursor_on.mp3")
             pygame.mixer.music.play()
@@ -73,9 +71,7 @@ class CursorController:
             CursorController.spawned_point = None
             return None, None
 
-        cx, cy = self.screen.coordinates_to_frame_pixels(
-            fingers.middle_tip.x, fingers.middle_tip.y
-        )
+        cx, cy = self.screen.coordinates_to_frame_pixels(fingers.middle_tip.x, fingers.middle_tip.y)
 
         if not CursorController.spawned_point:
             CursorController.spawned_point = (cx, cy)

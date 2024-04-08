@@ -19,39 +19,23 @@ class Gestures:
     def load_left_hand(self, hand: LeftHand) -> None:
         fingers = hand.fingers
 
-        LeftThumbTouchedIndex.when(
-            hand.touching(fingers.thumb_tip, fingers.index_tip)
-        ).dispatch()
-        LeftThumbTouchedMiddle.when(
-            hand.touching(fingers.thumb_tip, fingers.middle_tip)
-        ).dispatch(frame=self.frame, hand=hand)
-        LeftThumbTouchedRing.when(
-            hand.touching(fingers.thumb_tip, fingers.ring_tip)
-        ).dispatch()
-        LeftThumbTouchedPinky.when(
-            hand.touching(fingers.thumb_tip, fingers.pinky_tip)
-        ).dispatch()
-
-        CursorActivated.when(LeftHand.cursor_activated).dispatch(
+        LeftThumbTouchedIndex.when(hand.touching(fingers.thumb_tip, fingers.index_tip)).dispatch()
+        LeftThumbTouchedMiddle.when(hand.touching(fingers.thumb_tip, fingers.middle_tip)).dispatch(
             frame=self.frame, hand=hand
         )
+        LeftThumbTouchedRing.when(hand.touching(fingers.thumb_tip, fingers.ring_tip)).dispatch()
+        LeftThumbTouchedPinky.when(hand.touching(fingers.thumb_tip, fingers.pinky_tip)).dispatch()
+
+        CursorActivated.when(LeftHand.cursor_activated).dispatch(frame=self.frame, hand=hand)
 
     def load_right_hand(self, hand: RightHand) -> None:
         self.right_hand_up = hand.up()
 
         fingers = hand.fingers
-        RightThumbTouchedIndex.when(
-            hand.touching(fingers.thumb_tip, fingers.index_tip)
-        ).dispatch()
-        RightThumbTouchedMiddle.when(
-            hand.touching(fingers.thumb_tip, fingers.middle_tip)
-        ).dispatch()
-        RightThumbTouchedPinky.when(
-            hand.touching(fingers.thumb_tip, fingers.pinky_tip)
-        ).dispatch()
-        RightThumbTouchedRing.when(
-            hand.touching(fingers.thumb_tip, fingers.ring_tip)
-        ).dispatch()
+        RightThumbTouchedIndex.when(hand.touching(fingers.thumb_tip, fingers.index_tip)).dispatch()
+        RightThumbTouchedMiddle.when(hand.touching(fingers.thumb_tip, fingers.middle_tip)).dispatch()
+        RightThumbTouchedPinky.when(hand.touching(fingers.thumb_tip, fingers.pinky_tip)).dispatch()
+        RightThumbTouchedRing.when(hand.touching(fingers.thumb_tip, fingers.ring_tip)).dispatch()
 
         RightHandPointingOne.when(hand.one()).dispatch()
         RightHandPointingTwo.when(hand.two()).dispatch()
