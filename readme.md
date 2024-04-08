@@ -10,23 +10,25 @@ To try it out, just run the main function and have fun. When camera starts, put 
 ## Gestures
 ### Left hand
 
-- `Cursor mode` (or rather, hand operated cursor) - make a fist, and then open your hand fully (for a greater 
+- `Cursor "normal" mode` (or rather, hand operated cursor) - make a fist, and then open your hand fully (for a greater 
 cool effect do it like you're throwing sand in someone's face, whoosh!). Your monitor will be represented in smaller 
 scale on the screen, and you can move hand within those bounds to control the mouse.
+- ``Cursor "fine" mode`` - while in normal mode, flick your thumb inwards to switch to a fine mode which will move the 
+mouse gradually depending on how far away you drifted from original location where you turned the fine mode on. To
+better understand, just try it, and you'll see a line from origin point to your hand. Longer the line, faster the movement.
 
-- `Thumb + Index` touch - left mouse click (as long as you hold them together, click is active)
-- `Thumb + Middle` touch - middle mouse click with a moving gesture. To put it in a human-readable terms, this will enable 
-you to move camera around a point in Blender. The farthest you move your touching fingers from where you originally 
-connected them, the faster the rotation. When you release and touch again, you set a new origin.
+- `Thumb + Index finger` touch - left mouse click (as long as you hold them together, click is active)
+- `Thumb + Middle finger` touch - middle mouse click 
+- `Thumb + Ring finger` touch - right mouse click 
 
 ### Right hand
 
 - ``Grab`` (make a fist) - keyboard Shift
 
-- ``Thumb + Index`` - keyboard G (Blender move)
-- ``Thumb + Middle`` - keyboard R (Blender rotate)
-- ``Thumb + Ring`` - keyboard S (Blender scale)
-- ``Thumb + Pinky`` - keyboard E (Blender extrude)
+- ``Thumb + Index finger`` - keyboard G (Blender move)
+- ``Thumb + Middle finger`` - keyboard R (Blender rotate)
+- ``Thumb + Ring finger`` - keyboard S (Blender scale)
+- ``Thumb + Pinky finger`` - keyboard E (Blender extrude)
 
 - ``Pointing one`` (index finger up) - keyboard X (isolate X axis)
 - ``Pointing two`` (index and middle finger up) - keyboard Y (isolate Y axis)
@@ -120,6 +122,4 @@ drawn canvas bigger or smaller for finer or faster mouse movements)
 - Improve UX by dynamically changing points on hands which are currently active, and other which can be activated 
 within that mode
 - Prevent detecting random movements as gestures (i.e. drinking coffee in front of the screen would trigger events)
-- (continuous) Measure the time of the functions and make sure that all actions are smooth and non-blocking 
-
-
+- (continuous) Measure the time of the functions and make sure that all actions are smooth and non-blocking

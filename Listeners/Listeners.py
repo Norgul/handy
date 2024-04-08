@@ -127,41 +127,42 @@ class ControlCursor(Listener):
     def handle(self, **kwargs) -> None:
 
         cursor_controller: CursorController = self.args[0]
+        frame = kwargs.get("frame")
         hand: Hand = kwargs.get("hand")
+
+        mouse = MouseController()
+
+        if CursorController.fine_mode:
+            (mouse_x, mouse_y) = cursor_controller.calculate_distance_from_point(frame, *hand.bottom_knuckle_center())
+            mouse.move(mouse_x, mouse_y)
+            return
 
         if not CursorController.coordinates:
             return
 
-        (mouse_x, mouse_y) = cursor_controller.interpolate_mouse(*hand.bottom_knuckle_center())
-
-        # self.smoothen.update(mouse_x, mouse_y)
-        # smooth_x, smooth_y = self.smoothen.smooth()
-
-        mouse = MouseController()
-        mouse.position = (mouse_x, mouse_y)
+        mouse.position = cursor_controller.interpolate_mouse(*hand.bottom_knuckle_center())
 
 
-class PointDistance(Listener):
+class TurnOnFineMode(Listener):
+    def __init__(self, *args) -> None:
+        super().__init__(*args, flip_flop=True)
+
     def handle(self, **kwargs) -> None:
-
-        cursor_controller: CursorController = self.args[0]
-        frame = kwargs.get("frame")
-        hand = kwargs.get("hand")
-
-        (mouse_x, mouse_y) = cursor_controller.calculate_distance_from_point(frame, hand)
-
-        # self.smoothen.update(mouse_x, mouse_y)
-        # smooth_x, smooth_y = self.smoothen.smooth()
-
-        mouse = MouseController()
-        mouse.position = (mouse_x, mouse_y)
+        CursorController.fine_mode = True
 
 
-class ResetPoint(Listener):
+class TurnOffFineMode(Listener):
+    def __init__(self, *args) -> None:
+        super().__init__(*args, flip_flop=True)
+
     def handle(self, **kwargs) -> None:
+        CursorController.fine_mode = False
         CursorController.spawned_point = None
 
 
 class ResetCursorGrid(Listener):
+    def __init__(self, *args) -> None:
+        super().__init__(*args, flip_flop=True)
+
     def handle(self, **kwargs) -> None:
         CursorController.coordinates = None

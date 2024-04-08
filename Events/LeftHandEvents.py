@@ -38,13 +38,17 @@ class LeftThumbReleasedRing(Event):
 # endregion finger-to-finger touch
 
 
-class HandSpawnedCursor(Event):
-    pass
-
-
 class CursorActivated(Event):
     pass
 
 
 class CursorDeactivated(Event):
+    pass
+
+
+class FineModeActivated(Event):
+    pass
+
+
+class FineModeDeactivated(Event):
     pass

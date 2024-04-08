@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import Tuple
 from Models.Fingers import Fingers
 import math
-
 from Screen import Screen
 
 

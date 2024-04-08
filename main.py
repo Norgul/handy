@@ -18,16 +18,10 @@ EventManager(
         # region simple left gestures
         LeftThumbTouchedIndex(): [MousePress(Button.left)],
         LeftThumbReleasedIndex(): [MouseRelease(Button.left)],
-        LeftThumbTouchedMiddle(): [
-            MousePress(Button.middle),
-            PointDistance(cursor_controller),
-        ],
-        LeftThumbReleasedMiddle(): [
-            MouseRelease(Button.middle),
-            ResetPoint(cursor_controller),
-        ],
-        LeftThumbTouchedRing(): [],
-        LeftThumbReleasedRing(): [],
+        LeftThumbTouchedMiddle(): [MousePress(Button.middle)],
+        LeftThumbReleasedMiddle(): [MouseRelease(Button.middle)],
+        LeftThumbTouchedRing(): [MousePress(Button.right)],
+        LeftThumbReleasedRing(): [MousePress(Button.right)],
         LeftThumbTouchedPinky(): [],
         LeftThumbReleasedPinky(): [],
         # endregion simple left gestures
@@ -40,16 +34,15 @@ EventManager(
         RightThumbReleasedRing(): [KeyRelease("S")],
         RightThumbTouchedPinky(): [KeyPress("E")],
         RightThumbReleasedPinky(): [KeyRelease("E")],
-        # region simple right gestures
-        CursorActivated(): [
-            DrawCursorGrid(cursor_controller),
-            ControlCursor(cursor_controller),
-        ],
-        CursorDeactivated(): [ResetCursorGrid(cursor_controller)],
         RightHandPointingOne(): [KeyTap("X")],
         RightHandPointingTwo(): [KeyTap("Y")],
         RightHandPointingThree(): [KeyTap("Z")],
         RightHandGrab(): [KeyTap(Key.shift)],
+        # region simple right gestures
+        CursorActivated(): [DrawCursorGrid(cursor_controller), ControlCursor(cursor_controller)],
+        CursorDeactivated(): [ResetCursorGrid(cursor_controller)],
+        FineModeActivated(): [TurnOnFineMode(cursor_controller)],
+        FineModeDeactivated(): [TurnOffFineMode(cursor_controller)],
     },
     inverse_map={
         LeftThumbTouchedIndex: LeftThumbReleasedIndex,
@@ -61,6 +54,7 @@ EventManager(
         RightThumbTouchedPinky: RightThumbReleasedPinky,
         RightThumbTouchedRing: RightThumbReleasedRing,
         CursorActivated: CursorDeactivated,
+        FineModeActivated: FineModeDeactivated,
     },
 )
 

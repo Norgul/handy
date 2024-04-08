@@ -18,6 +18,10 @@ class CursorController:
     # Coordinates for a cursor grid within the mouse will move
     coordinates = None
 
+    # When fine mode is false, mouse will move withing a spawned grid, 
+    # otherwise it will spawn a point and move from there
+    fine_mode = False
+
     def __init__(self, scale_percentage: int = 50) -> None:
         self.scale_percentage = scale_percentage
         self.monitor_width, self.monitor_height = pyautogui.size()
@@ -64,28 +68,24 @@ class CursorController:
 
         return (mouse_x, mouse_y)
 
-    def calculate_distance_from_point(self, frame, hand: Hand) -> Tuple[float, float]:
-        fingers = hand.fingers
-
-        if not hand.touching(fingers.thumb_tip, fingers.middle_tip):
+    def calculate_distance_from_point(self, frame, x, y) -> Tuple[float, float]:
+        if not CursorController.fine_mode:
             CursorController.spawned_point = None
             return None, None
 
-        cx, cy = self.screen.coordinates_to_frame_pixels(fingers.middle_tip.x, fingers.middle_tip.y)
-
         if not CursorController.spawned_point:
-            CursorController.spawned_point = (cx, cy)
+            CursorController.spawned_point = (x, y)
 
-        cv2.line(frame, CursorController.spawned_point, (cx, cy), (255, 255, 0), 3)
+        cv2.line(frame, CursorController.spawned_point, (x, y), (255, 255, 0), 3)
 
         # Calculate distance between points
-        x_diff_squared = (cx - CursorController.spawned_point[0]) ** 2
-        y_diff_squared = (cy - CursorController.spawned_point[1]) ** 2
+        x_diff_squared = (x - CursorController.spawned_point[0]) ** 2
+        y_diff_squared = (y - CursorController.spawned_point[1]) ** 2
         distance = math.sqrt(x_diff_squared + y_diff_squared)
 
         direction_vector = (
-            cx - CursorController.spawned_point[0],
-            cy - CursorController.spawned_point[1],
+            x - CursorController.spawned_point[0],
+            y - CursorController.spawned_point[1],
         )
 
         # Calculate speed based on distance
