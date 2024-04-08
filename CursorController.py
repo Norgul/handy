@@ -4,8 +4,9 @@ import pyautogui
 import pygame
 from typing import Tuple
 import math
-
 from Screen import Screen
+
+import numpy as np
 
 class CursorController:
         
@@ -44,22 +45,17 @@ class CursorController:
         cv2.circle(frame, (x, y), 25, (0, 0, 0), cv2.FILLED)
 
 
-    def normalize_mouse(self, x, y) -> Tuple[float, float]:
+    def interpolate_mouse(self, x, y) -> Tuple[float, float]:
         """
-        Take x/y coordinates as pixel value of frame pixels
-        move origin so that 0 starts on rectangle beginning instead of frame beginning
-        normalize them to monitor dimensions
+        Take x/y coordinates and interpolate to screen dimensions
         """
-        top_left_x, top_left_y = (CursorController.coordinates[0], CursorController.coordinates[1])
+        top_left_x = CursorController.coordinates[0]
+        top_left_y = CursorController.coordinates[1]
+        bottom_right_x = CursorController.coordinates[2]
+        bottom_right_y = CursorController.coordinates[3]
 
-        x_moved_origin = x - top_left_x
-        y_moved_origin = y - top_left_y
-
-        normalized_x = int(x_moved_origin / Screen.scale_factor)
-        normalized_y = int(y_moved_origin / Screen.scale_factor)
-
-        mouse_x = max(0, min(normalized_x, self.screen.monitor_width))
-        mouse_y = max(0, min(normalized_y, self.screen.monitor_height))
+        mouse_x = np.interp(x, (top_left_x, bottom_right_x), (0, Screen.monitor_width))
+        mouse_y = np.interp(y, (top_left_y, bottom_right_y), (0, Screen.monitor_height))
 
         return (mouse_x, mouse_y)
 

@@ -119,13 +119,12 @@ class ControlCursor(Listener):
     def handle(self, **kwargs) -> None:
         
         cursor_controller: CursorController = self.args[0]
-        frame = kwargs.get('frame')
         hand: Hand = kwargs.get('hand')
 
         if not CursorController.coordinates:
             return
     
-        (mouse_x, mouse_y) = cursor_controller.normalize_mouse(*hand.bottom_knuckle_center())
+        (mouse_x, mouse_y) = cursor_controller.interpolate_mouse(*hand.bottom_knuckle_center())
 
         # self.smoothen.update(mouse_x, mouse_y)
         # smooth_x, smooth_y = self.smoothen.smooth()
